@@ -45,13 +45,25 @@
   </div>
 </div></nav>
 <main class="wrap" id="top">
-<header class="page"><nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Contact</span></nav><div class="eyebrow"><b>Replies within a business day</b> · Troy Meekhof</div><h1 style="margin-top:14px">Let's talk</h1><div class="lede">One form for everything. Pick the topic and I'll route it: weddings go to Mid-July Media, business work to Grand Rapids Marketing Co., and Cybertruck collabs to me directly.</div></header><section style="border-top:0;padding-top:8px"><div class="grid2"><form onsubmit="event.preventDefault();alert('Form wiring lands with the Cloudflare deploy.')">
-      <label>Name<input id="f-name" name="name" required></label>
-      <label>Email<input id="f-email" type="email" name="email" required></label>
-      <label class="full">This is about<select id="f-topic" name="topic"><option>A wedding</option><option>Marketing / SEO for my business</option><option>Freelance video or drone work</option><option>Cybertruck sponsorship or collab</option><option>Something else</option></select></label>
-      <label class="full">Message<textarea id="f-msg" name="message" rows="5" required></textarea></label>
-      <div class="full"><button class="btn" type="submit">Send message</button></div>
-    </form><div>
+<header class="page"><nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Contact</span></nav><div class="eyebrow"><b>Replies within a business day</b> · Troy Meekhof</div><h1 style="margin-top:14px">Let's talk</h1><div class="lede">One form for everything. Pick the topic and I'll route it: weddings go to Mid-July Media, business work to Grand Rapids Marketing Co., and Cybertruck collabs to me directly.</div></header><section style="border-top:0;padding-top:8px"><div class="grid2"><form id="route" action="/contact/" method="get">
+      <label class="full">This is about<select id="f-topic" name="topic" required>
+        <option value="" disabled selected>Pick one…</option>
+        <option value="wedding" data-href="https://stories.midjulymedia.com/public/check-availability">A wedding</option>
+        <option value="freelance" data-href="https://stories.midjulymedia.com/public/freelancevideo">Freelance video, drone, or commercial work</option>
+        <option value="marketing" data-href="https://grandrapidsmarketingco.com/free-search-gap-audit">Marketing / SEO for my business</option>
+        <option value="cybertruck" data-href="mailto:troy@grandrapidsmarketingco.com?subject=Cybertruck%20collab">Cybertruck sponsorship or collab</option>
+        <option value="other" data-href="mailto:hello@midjulymedia.com?subject=Hello%20from%20troymeekhof.com">Something else</option>
+      </select></label>
+      <div class="full"><button class="btn" type="submit">Continue</button></div>
+      <ul class="routes full">
+        <li><a href="https://stories.midjulymedia.com/public/check-availability">A wedding</a> → check my availability</li>
+        <li><a href="https://stories.midjulymedia.com/public/freelancevideo">Freelance video, drone, or commercial work</a> → project inquiry</li>
+        <li><a href="https://grandrapidsmarketingco.com/free-search-gap-audit">Marketing / SEO for my business</a> → free Search Gap Audit</li>
+        <li><a href="mailto:troy@grandrapidsmarketingco.com?subject=Cybertruck%20collab">Cybertruck sponsorship or collab</a> → email Troy</li>
+        <li><a href="mailto:hello@midjulymedia.com?subject=Hello%20from%20troymeekhof.com">Something else</a> → say hello</li>
+      </ul>
+    </form>
+    <div>
       <p style="margin-top:0"><b>Weddings</b> → <a href="mailto:hello@midjulymedia.com">hello@midjulymedia.com</a> · <a href="tel:+16167730599">(616) 773-0599</a><br><b>Marketing</b> → <a href="mailto:troy@grandrapidsmarketingco.com">troy@grandrapidsmarketingco.com</a> · <a href="tel:+16164379624">616-437-9624</a><br><b>Cybertruck / sponsors</b> → DM <a href="https://x.com/cybrtrkguy">@cybrtrkguy</a></p>
       <div class="socials">
         <a href="https://www.linkedin.com/in/troymeekhof/">LinkedIn</a><a href="https://www.youtube.com/@cybrtrkguy">YouTube</a><a href="https://x.com/cybrtrkguy">X</a><a href="https://www.instagram.com/troymeekhof">Instagram</a><a href="https://www.tiktok.com/@troymeekhof">TikTok</a><a href="https://www.facebook.com/troymeekhof">Facebook</a><a href="https://midjulymedia.com">Mid-July Media</a><a href="https://grandrapidsmarketingco.com">GRMC</a>
