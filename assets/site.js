@@ -1,4 +1,16 @@
 (function(){
+  var form=document.getElementById('route'),sel=document.getElementById('f-topic');
+  if(!form||!sel)return;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var opt=sel.options[sel.selectedIndex],href=opt&&opt.getAttribute('data-href');
+    if(!href){sel.focus();return;}
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push({event:'contact_route',topic:opt.value});
+    window.location.href=href;
+  });
+})();
+(function(){
   if(!document.getElementById('modeLabel'))return;
   var copy={
     all:{label:"Caledonia, Michigan",h1:"Filmmaker. Marketer.<br><span>The Cybertruck Guy.</span>",lede:"I'm Troy Meekhof — a West Michigan filmmaker and digital marketer who's filmed dozens and dozens of weddings, 10x'd a mortgage lender's traffic, and built a 50-million-view audience around one very shiny truck."},
