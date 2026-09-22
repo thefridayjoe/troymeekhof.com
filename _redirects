@@ -1,0 +1,17 @@
+# thecybrtrkguy.com → troymeekhof.com (applied once that domain is attached to this project)
+https://thecybrtrkguy.com/* https://troymeekhof.com/:splat 301
+https://www.thecybrtrkguy.com/articles/cybertruck-winter-tire-range-test-at-70-mph /articles/cybertruck-winter-tire-range-test-at-70-mph/ 301
+https://www.thecybrtrkguy.com/articles/guide-to-driving-cybertruck-in-extreme-cold /articles/guide-to-driving-cybertruck-in-extreme-cold/ 301
+https://www.thecybrtrkguy.com/articles/install-a-starlink-mini-on-a-cybertruck-48v /articles/install-a-starlink-mini-on-a-cybertruck-48v/ 301
+https://www.thecybrtrkguy.com/articles/cybertruck-7500-ev-tax-credit /articles/cybertruck-7500-ev-tax-credit/ 301
+https://www.thecybrtrkguy.com/articles/driving-cybertruck-from-michigan-to-montana /articles/driving-cybertruck-from-michigan-to-montana/ 301
+https://www.thecybrtrkguy.com/articles/cybertruck-rental-grand-rapids /articles/cybertruck-rental-grand-rapids/ 301
+https://www.thecybrtrkguy.com/articles/cybertruck-rental-chicago /articles/cybertruck-rental-chicago/ 301
+https://www.thecybrtrkguy.com/articles /articles/ 301
+https://www.thecybrtrkguy.com/referral-links /cybertruck/referral-links/ 301
+https://www.thecybrtrkguy.com/contact-1 /cybertruck/sponsorships/ 301
+https://www.thecybrtrkguy.com/contact /contact/ 301
+https://www.thecybrtrkguy.com/cybertruck-display-locations /cybertruck/display-locations/ 301
+https://www.thecybrtrkguy.com/* https://troymeekhof.com/cybertruck/ 301
+# old blog paths (none kept)
+/blog/* / 301
