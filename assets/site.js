@@ -1,41 +1,80 @@
 (function(){
-  var form=document.getElementById('route'),sel=document.getElementById('f-topic');
-  if(!form||!sel)return;
-  form.addEventListener('submit',function(e){
+  var d=document,root=d.documentElement,orig=root.getAttribute('data-persona');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function push(o){window.dataLayer=window.dataLayer||[];window.dataLayer.push(o);}
+  function $$(q,el){return Array.prototype.slice.call((el||d).querySelectorAll(q));}
+  // Persona switch: real links; with JS the thumb slides and the palette crossfades before navigating.
+  $$('.switch a[data-to]').forEach(function(a){a.addEventListener('click',function(e){
+    var to=a.getAttribute('data-to');
+    if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    push({event:'persona_switch',persona:to});
+    if(to===orig||reduce)return;
     e.preventDefault();
-    var opt=sel.options[sel.selectedIndex],href=opt&&opt.getAttribute('data-href');
-    if(!href){sel.focus();return;}
-    window.dataLayer=window.dataLayer||[];
-    window.dataLayer.push({event:'contact_route',topic:opt.value});
-    window.location.href=href;
-  });
-})();
-(function(){
-  if(!document.getElementById('modeLabel'))return;
-  var copy={
-    all:{label:"Caledonia, Michigan",h1:"Filmmaker. Marketer.<br><span>The Cybertruck Guy.</span>",lede:"I'm Troy Meekhof — a West Michigan filmmaker and digital marketer who's filmed dozens and dozens of weddings, 10x'd a mortgage lender's traffic, and built a 50-million-view audience around one very shiny truck."},
-    weddings:{label:"Mid-July Media",h1:"No wedding should be<br><span>left unfilmed.</span>",lede:"Michigan wedding films since 2019. Highlights and full documentaries, drone included, no travel fee in the Lower Peninsula — and I'm the videographer at every single one."},
-    marketing:{label:"Grand Rapids Marketing Co.",h1:"Brilliant marketing<br><span>for any budget.</span>",lede:"SEO, GEO, video, and websites for small businesses. I took a mortgage lender from 50 to 500 clicks a day; start with a free Search Gap Audit for yours."},
-    cybertruck:{label:"@cybrtrkguy",h1:"The Cybertruck<br><span>Guy.</span>",lede:"Owner since 2024. 50M impressions a year of honest ownership content: range tests, mods, road trips, and the $1,000-off Tesla referral link. Quoted in Newsweek."},
-    adventure:{label:"Serial road-tripper",h1:"Michigan to Montana,<br><span>and back.</span>",lede:"Overlanding, camping, dunes, and drone footage from 4,500-mile road trips — in a stainless steel truck that shouldn't work as an adventure rig, but does."},
-    local:{label:"Village of Caledonia",h1:"West Michigan,<br><span>born and stayed.</span>",lede:"Restoring a 1915 stucco house, raising a kid, GVSU class of 2020, Tesla Owners Club of Michigan, and always chasing the next cheap breakfast joint."}
-  };
-  var root=document.documentElement,btns=document.querySelectorAll('.modes a[data-set]');
-  function setMode(m){
-    if(!copy[m])m='all';
-    root.setAttribute('data-mode',m);
-    btns.forEach(function(b){if(b.dataset.set===m){b.setAttribute('aria-current','page')}else{b.removeAttribute('aria-current')}});
-    document.getElementById('modeLabel').textContent=copy[m].label;
-    document.getElementById('h1').innerHTML=copy[m].h1;
-    document.getElementById('lede').textContent=copy[m].lede;
-    document.querySelectorAll('[data-m]').forEach(function(el){el.hidden=(m!=='all'&&el.dataset.m.split(' ').indexOf(m)<0)});
-    try{localStorage.setItem('tm-mode',m)}catch(e){}
-    if(location.hash.replace('#','')!==m&&m!=='all')history.replaceState(null,'','#'+m);
-    if(m==='all'&&location.hash)history.replaceState(null,'',location.pathname);
+    root.classList.add('switching');root.setAttribute('data-persona',to);
+    setTimeout(function(){window.location.href=a.href;},260);
+  });});
+  window.addEventListener('pageshow',function(e){if(e.persisted){root.setAttribute('data-persona',orig);root.classList.remove('switching');}});
+  // Analytics: mailto/tel and outbound clicks (delegated).
+  d.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;
+    var h=a.getAttribute('href');
+    if(/^mailto:/i.test(h))push({event:'contact_click',method:'email'});
+    else if(/^tel:/i.test(h))push({event:'contact_click',method:'phone'});
+    else if(/^https?:/i.test(a.href)&&a.hostname!==location.hostname)push({event:'outbound_click',url:a.href});
+  },true);
+  // Contact form: record the lead, then let the normal POST go through.
+  var form=d.getElementById('contact-form'),sel=d.getElementById('f-topic');
+  if(form&&sel){
+    var want=(location.search.match(/[?&]topic=([\w-]+)/)||[])[1];
+    if(want)$$('option[data-key]',sel).forEach(function(o){if(o.getAttribute('data-key')===want)sel.value=o.value;});
+    form.addEventListener('submit',function(){push({event:'generate_lead',form:'contact',topic:sel.value});});
   }
-  // On the home page the mode pills filter in place; the hrefs stay as real links for crawlers and new tabs.
-  btns.forEach(function(b){b.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0)return;e.preventDefault();setMode(b.dataset.set);})});
-  var h=location.hash.replace('#','');
-  setMode(copy[h]?h:'all');
-  window.addEventListener('hashchange',function(){var x=location.hash.replace('#','');setMode(copy[x]?x:'all')});
+  // Wedding date check: opens the availability form in a new tab (the date itself is not sent).
+  $$('form.datecheck').forEach(function(f){f.addEventListener('submit',function(){
+    var v=f.querySelector('input[type=date]').value,n=f.querySelector('.dc-note');
+    push({event:'check_date'});
+    if(n)n.textContent='Opening the availability form in a new tab'+(v?'. Choose '+new Date(v+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' there.':'.');
+  });});
+  // Stats count up when scrolled into view (final values are already in the HTML).
+  var nums=$$('[data-count]');
+  if(nums.length&&'IntersectionObserver' in window&&!reduce){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){
+      if(!en.isIntersecting)return;io.unobserve(en.target);
+      var el=en.target,end=parseFloat(el.getAttribute('data-count')),dec=+(el.getAttribute('data-dec')||0),suf=el.getAttribute('data-suffix')||'',t0=null;
+      function fmt(v){return Number(v.toFixed(dec)).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;}
+      function step(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/1300);el.textContent=fmt(end*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step);}
+      el.textContent=fmt(0);requestAnimationFrame(step);
+    });},{threshold:.5});
+    nums.forEach(function(n){io.observe(n);});
+  }
+  // Miles tracker: tap a marker to toggle its caption.
+  $$('.miles .pin').forEach(function(p){p.addEventListener('click',function(){
+    var on=p.getAttribute('aria-expanded')==='true';
+    $$('.miles .pin').forEach(function(q){q.setAttribute('aria-expanded','false');});
+    p.setAttribute('aria-expanded',on?'false':'true');
+  });});
+  // Lightbox: <a class="lb" data-lb="group"> opens in a <dialog>; arrows navigate, Esc closes.
+  var dlg,img,cap,grp=[],idx=0,opener;
+  function show(i){idx=(i+grp.length)%grp.length;var a=grp[idx],im=a.querySelector('img');img.src=a.href;img.alt=im?im.alt:'';cap.textContent=im?im.alt:'';
+    dlg.querySelector('.lb-p').hidden=dlg.querySelector('.lb-n').hidden=grp.length<2;}
+  function build(){dlg=d.createElement('dialog');dlg.className='lightbox';dlg.setAttribute('aria-label','Photo viewer');
+    dlg.innerHTML='<figure><img alt=""><figcaption></figcaption></figure><button type="button" class="lb-p" aria-label="Previous photo">&#8249;</button><button type="button" class="lb-n" aria-label="Next photo">&#8250;</button><button type="button" class="lb-x" aria-label="Close">&#215;</button>';
+    d.body.appendChild(dlg);img=dlg.querySelector('img');cap=dlg.querySelector('figcaption');
+    dlg.querySelector('.lb-p').onclick=function(){show(idx-1);};dlg.querySelector('.lb-n').onclick=function(){show(idx+1);};
+    dlg.querySelector('.lb-x').onclick=function(){dlg.close();};
+    dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+    dlg.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'){e.preventDefault();show(idx-1);}else if(e.key==='ArrowRight'){e.preventDefault();show(idx+1);}});
+    dlg.addEventListener('close',function(){img.removeAttribute('src');if(opener)opener.focus();});}
+  d.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a.lb');
+    if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0||typeof HTMLDialogElement!=='function')return;
+    e.preventDefault();if(!dlg)build();opener=a;grp=$$('a.lb[data-lb="'+a.getAttribute('data-lb')+'"]');show(grp.indexOf(a));dlg.showModal();dlg.querySelector('.lb-x').focus();
+  });
+  // Reading progress (articles) and back-to-top.
+  var bar=d.querySelector('.progress span'),art=d.querySelector('.prose'),top=d.querySelector('.totop'),tick=false;
+  function onScroll(){tick=false;var y=window.scrollY||0;
+    if(bar&&art){var r=art.getBoundingClientRect(),h=r.height-window.innerHeight*0.6,p=h>0?Math.min(1,Math.max(0,-r.top/h)):1;bar.style.transform='scaleX('+p+')';}
+    if(top)top.classList.toggle('on',y>900);}
+  window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(onScroll);}},{passive:true});onScroll();
+  if(top)top.addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});var f=d.querySelector('.switch a');if(f)f.focus({preventScroll:true});});
 })();
