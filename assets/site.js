@@ -20,7 +20,7 @@
     var h=a.getAttribute('href');
     if(/^mailto:/i.test(h))push({event:'contact_click',method:'email'});
     else if(/^tel:/i.test(h))push({event:'contact_click',method:'phone'});
-    else if(/^https?:/i.test(a.href)&&a.hostname!==location.hostname)push({event:'outbound_click',url:a.href});
+    else if(/^https?:/i.test(a.href)&&a.hostname!==location.hostname&&!a.classList.contains('vplay'))push({event:'outbound_click',url:a.href});
   },true);
   // Contact form: record the lead, then let the normal POST go through.
   var form=d.getElementById('contact-form'),sel=d.getElementById('f-topic');
@@ -53,6 +53,17 @@
     $$('.miles .pin').forEach(function(q){q.setAttribute('aria-expanded','false');});
     p.setAttribute('aria-expanded',on?'false':'true');
   });});
+  // Lite YouTube: the link plays in place as a youtube-nocookie iframe (created only on click).
+  d.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a.vplay');
+    if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
+    e.preventDefault();
+    var id=a.getAttribute('data-yt'),list=a.getAttribute('data-list'),t=a.getAttribute('data-title')||'Video',f=d.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+(list?'videoseries?list='+list+'&':id+'?')+'autoplay=1&rel=0';
+    f.title=t;f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture; fullscreen');f.setAttribute('allowfullscreen','');
+    var box=d.createElement('div');box.className='vframe';box.appendChild(f);a.parentNode.replaceChild(box,a);f.focus();
+    push({event:'video_play',video_id:id||list,video_title:t});
+  });
   // Lightbox: <a class="lb" data-lb="group"> opens in a <dialog>; arrows navigate, Esc closes.
   var dlg,img,cap,grp=[],idx=0,opener;
   function show(i){idx=(i+grp.length)%grp.length;var a=grp[idx],im=a.querySelector('img');img.src=a.href;img.alt=im?im.alt:'';cap.textContent=im?im.alt:'';
