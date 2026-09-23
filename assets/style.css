@@ -115,13 +115,47 @@ a.card:hover{border-color:var(--muted)}
 .piece h3{font-size:23px;margin:16px 0 6px}
 .piece p{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
 .piece:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
-.film{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;aspect-ratio:16/9;border-radius:var(--radius);margin:0 0 36px;color:var(--poster-ink);text-align:center;
-  background:radial-gradient(90% 90% at 80% 10%,var(--glow),transparent 60%),linear-gradient(155deg,var(--poster-a),var(--poster-b))}
-.film .play{position:relative;width:68px;height:68px;border-radius:50%;border:1px solid currentColor;opacity:.85}
-.film .play::after{content:"";position:absolute;left:27px;top:21px;border-left:19px solid currentColor;border-top:13px solid transparent;border-bottom:13px solid transparent}
-.film b{font-family:var(--display);font-weight:400;font-size:clamp(22px,3vw,30px)}
-.film small{font-size:15px;opacity:.85;max-width:34ch;padding-inline:16px}
-.film iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:var(--radius)}
+.film{margin:0 0 36px}
+/* video (lite YouTube embed) */
+.video{margin:0}
+.vplay,.vframe{position:relative;display:block;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#0d1110}
+.vplay img.yt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .35s ease,opacity .2s ease}
+.vplay::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.28))}
+.vbtn{position:absolute;left:50%;top:50%;z-index:1;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(15,20,18,.72);border:1px solid rgba(255,255,255,.7);transition:transform .2s ease,background .2s ease}
+.vbtn::after{content:"";position:absolute;left:26px;top:20px;border-left:18px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+.vplay:hover img.yt,.vplay:focus-visible img.yt{transform:scale(1.03)}
+.vplay:hover .vbtn,.vplay:focus-visible .vbtn{transform:scale(1.08);background:var(--primary)}
+.vplay:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video figcaption{margin-top:12px}
+.video .vt{font-family:var(--sans);font-size:17px;font-weight:600;line-height:1.35;margin:0}
+.video figcaption span{display:block;margin-top:4px;color:var(--muted);font-size:15px;line-height:1.5}
+.video.big .vt{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.4vw,28px)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.work.work4{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px}
+.work4 .piece h3{font-size:21px}
+.vgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 22px}
+.vgrid .video.big{grid-column:span 2;grid-row:span 2}
+.vgrid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.poster.has-thumb{background:#0d1110}
+.poster.has-thumb img.yt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform .35s ease}
+.poster.has-thumb::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 40%,rgba(0,0,0,.55))}
+.poster.has-thumb .play,.poster.has-thumb .kind{z-index:1}
+.piece:hover .poster.has-thumb img.yt{transform:scale(1.14)}
+.lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.lcard{position:relative;display:flex;flex-direction:column;gap:4px;padding:20px 22px 20px 64px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);text-decoration:none;color:var(--ink);transition:border-color .2s ease,transform .2s ease}
+.lcard:hover,.lcard:focus-visible{border-color:var(--muted);transform:translateY(-2px)}
+.lcard svg.ig{position:absolute;left:20px;top:20px;width:28px;height:28px;fill:none;stroke:var(--em);stroke-width:1.6;stroke-linecap:round}
+.lcard svg.ig .dot{fill:var(--em);stroke:none}
+.lcard .tag{font-size:13px;font-weight:600;color:var(--muted)}
+.lcard b{font-size:17px;line-height:1.35}
+.lcard .lt{font-size:15px;line-height:1.5;color:var(--muted)}
+.lcard.more{padding-left:22px;justify-content:center;background:transparent}
+.sub-h{font-family:var(--display);font-weight:400;font-size:clamp(24px,2.6vw,30px);margin:44px 0 18px}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.jump a{padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;text-decoration:none;color:var(--ink)}
+.jump a:hover{border-color:var(--muted)}
+.follow-ig{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:15px}
 .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px;margin:34px 0 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .facts dt{font-weight:600;color:var(--muted);font-size:14px}
 .facts dd{margin:4px 0 0;font-size:16px;line-height:1.5}
@@ -276,7 +310,8 @@ footer .fine{margin:0}
   .adv{grid-template-columns:repeat(2,minmax(0,1fr))}
   .adv a:first-child .ph{aspect-ratio:2/1}
   .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:170px}
-  .grid3,.grid4,.work{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid3,.grid4,.work,.work.work4,.vgrid,.vgrid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vgrid .video.big{grid-column:1/-1;grid-row:auto}
   .grid2,.auth,.layout{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat:nth-child(3){padding-left:0;border-left:0}
@@ -291,7 +326,8 @@ footer .fine{margin:0}
   .top{padding-top:16px}
   .switch a{padding:11px 6px}
   .pnav{gap:2px 16px;font-size:15px}
-  .grid3,.grid4,.work{grid-template-columns:1fr}
+  .grid3,.grid4,.work,.work.work4,.vgrid,.vgrid4{grid-template-columns:1fr}
+  .vgrid .video.big{grid-column:auto;grid-row:auto}
   .stat{padding:20px 12px 18px 0}
   .stat+.stat{padding-left:14px}
   .stat:nth-child(3){padding-left:0}
