@@ -155,6 +155,9 @@ a.card:hover{border-color:var(--muted)}
 .jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .jump a{padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;text-decoration:none;color:var(--ink)}
 .jump a:hover{border-color:var(--muted)}
+.lcard .go{display:block;margin-top:8px;font-size:14px;font-weight:600;color:var(--ink)}
+.ig-row .lcards{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.ig-row .lcards:has(> :nth-child(4)){grid-template-columns:repeat(4,minmax(0,1fr))}
 .follow-ig{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:15px}
 .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px;margin:34px 0 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .facts dt{font-weight:600;color:var(--muted);font-size:14px}
