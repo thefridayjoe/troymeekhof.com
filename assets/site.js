@@ -81,6 +81,15 @@
     if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0||typeof HTMLDialogElement!=='function')return;
     e.preventDefault();if(!dlg)build();opener=a;grp=$$('a.lb[data-lb="'+a.getAttribute('data-lb')+'"]');show(grp.indexOf(a));dlg.showModal();dlg.querySelector('.lb-x').focus();
   });
+  // Article category chips: real links to /articles/category/<slug>/; on the index they also filter in place.
+  var chips=d.querySelector('.chips[data-filter]');
+  if(chips)chips.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a');
+    if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0)return;
+    e.preventDefault();var c=a.getAttribute('data-cat');
+    chips.querySelectorAll('a').forEach(function(x){if(x===a)x.setAttribute('aria-current','true');else x.removeAttribute('aria-current');});
+    d.querySelectorAll('#articles-list .art').forEach(function(x){x.hidden=!!c&&x.getAttribute('data-cat')!==c;});
+  });
   // Reading progress (articles) and back-to-top.
   var bar=d.querySelector('.progress span'),art=d.querySelector('.prose'),top=d.querySelector('.totop'),tick=false;
   function onScroll(){tick=false;var y=window.scrollY||0;
