@@ -1,0 +1,45 @@
+# One-shot (2026-09-24): copy article photos off Squarespace before thecybrtrkguy.com goes down.
+# Run manually. Safe to re-run (does nothing once no Squarespace URLs remain). Delete this file afterwards.
+name: Import Squarespace images (one-shot)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==12.2.0
+      - name: Download, convert, point pages at local copies
+        run: python3 _src/tools/import_sq_images.py
+      - name: Site check
+        run: python3 _src/site.py check
+      - name: Commit, guard, push, deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- articles && [ -z "$(git status --porcelain assets/img/articles)" ]; then echo "nothing to do"; exit 0; fi
+          python3 - <<'EOF'
+          p = "_src/CHANGELOG.md"
+          t = open(p, encoding="utf-8").read()
+          head, rest = t.split("\n\n", 1)
+          line = "- 2026-09-24 · Moved 29 article photos from Squarespace into assets/img/articles/ (WebP) and pointed the 5 Cybertruck articles at them · (this commit) · Troy is taking thecybrtrkguy.com down: \"download and host the photos yourself\"\n"
+          open(p, "w", encoding="utf-8").write(head + "\n\n" + line + rest)
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add articles assets/img/articles _src/CHANGELOG.md
+          git commit -m "Host article photos locally (Squarespace is being shut down)"
+          python3 _src/site.py guard
+          git push
+          gh workflow run site.yml --ref main
