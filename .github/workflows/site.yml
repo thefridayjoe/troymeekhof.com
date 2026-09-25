@@ -1,0 +1,48 @@
+# Guard + deploy for troymeekhof.com.
+# Every push to main is checked. With Pages set to deploy from GitHub Actions (see _src/README.md),
+# a push that fails the guard is NEVER published: the live site stays on the last good version.
+name: Guard and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Site check (links, JSON-LD, sitemap, banned text)
+        run: python3 _src/site.py check
+      - name: Regression guard (no deleted pages, no old-version overwrites, no big content loss)
+        run: python3 _src/site.py guard --base "${{ github.event.before }}"
+
+  deploy:
+    needs: guard
+    if: vars.DEPLOY_WITH_ACTIONS == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage public files
+        run: python3 _src/site.py stage _site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
